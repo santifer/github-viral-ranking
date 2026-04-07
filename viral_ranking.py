@@ -163,7 +163,16 @@ def main():
                 candidates.add(item["full_name"])
         time.sleep(2)  # search API rate limit
 
-    # Add known viral repos manually
+    # Load repos from viral_tracker database
+    db_path = Path(__file__).parent / "data" / "viral_repos.json"
+    if db_path.exists():
+        with open(db_path) as f:
+            db = json.load(f)
+        db_repos = set(db.get("repos", {}).keys())
+        candidates.update(db_repos)
+        print(f"  Loaded {len(db_repos)} repos from tracker database")
+
+    # Add known historically viral repos
     known_viral = [
         "Significant-Gravitas/AutoGPT",
         "ollama/ollama",
@@ -173,36 +182,23 @@ def main():
         "browser-use/browser-use",
         "abi/screenshot-to-code",
         "karpathy/nanoGPT",
+        "karpathy/nanochat",
+        "FoundationAgents/OpenManus",
         "AUTOMATIC1111/stable-diffusion-webui",
         "f/prompts.chat",
         "FlowiseAI/Flowise",
         "langchain-ai/langchain",
         "ggerganov/llama.cpp",
-        "meta-llama/llama",
-        "openai/whisper",
         "openai/chatgpt-retrieval-plugin",
-        "lencx/ChatGPT",
-        "binary-husky/gpt_academic",
-        "geekan/MetaGPT",
-        "lobehub/lobe-chat",
-        "ChatGPTNextWeb/ChatGPT-Next-Web",
-        "QuivrHQ/quivr",
-        "mckaywrigley/chatbot-ui",
-        "AntonOsika/gpt-engineer",
-        "XingangPan/DragGAN",
-        "comfyanonymous/ComfyUI",
-        "hpcaitech/ColossalAI",
-        "BlinkDL/RWKV-LM",
-        "Stability-AI/stablediffusion",
         "CompVis/stable-diffusion",
-        "hwchase17/langchainjs",
         "langgenius/dify",
-        "jmorganca/ollama",
         "All-Hands-AI/OpenHands",
-        "microsoft/autogen",
-        "crewAIInc/crewAI",
         "kamranahmedse/developer-roadmap",
         "codecrafters-io/build-your-own-x",
+        "996icu/996.ICU",
+        "ohmyzsh/ohmyzsh",
+        "EbookFoundation/free-programming-books",
+        "torvalds/linux",
     ]
     candidates.update(known_viral)
 
